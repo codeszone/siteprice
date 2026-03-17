@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const cache = {};
 
 const cache = Object.create(null);
 
@@ -33,6 +32,10 @@ app.get('/api/site', (req, res) => {
   res.json(siteData);
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+
+module.exports = app;
