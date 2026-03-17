@@ -13,6 +13,8 @@ async function generate() {
   const templatePath = path.join(__dirname, '../frontend/template.html');
   const template = await fs.readFile(templatePath, 'utf8');
 
+  const generatedPages = [];
+
   for (const domain of domains) {
     try {
       // The API has a bug where passing ?domain= crashes due to undefined cache.
@@ -39,9 +41,20 @@ async function generate() {
       await fs.writeFile(outFile, output, 'utf8');
 
       console.log(`Generated ${outFile}`);
+      generatedPages.push(`https://${domain}/`);
     } catch (err) {
       console.error(`Failed to generate for ${domain}:`, err.message);
     }
+  }
+
+  try {
+    const sitemapContent = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+      generatedPages.map(page => `  <url>\n    <loc>${page}</loc>\n  </url>`).join('\n') +
+      '\n</urlset>';
+    await fs.writeFile(path.join(__dirname, '../output/sitemap.xml'), sitemapContent, 'utf8');
+    console.log('Generated sitemap.xml');
+  } catch (err) {
+    console.error('Failed to generate sitemap:', err.message);
   }
 }
 
