@@ -43,6 +43,18 @@ async function generate() {
       console.error(`Failed to generate for ${domain}:`, err.message);
     }
   }
+
+  // Generate robots.txt
+  try {
+    const outputRoot = path.join(__dirname, '../output');
+    await fs.ensureDir(outputRoot);
+    const robotsContent = 'User-agent: *\nAllow: /\nSitemap: /sitemap.xml\n';
+    await fs.writeFile(path.join(outputRoot, 'robots.txt'), robotsContent, 'utf8');
+    console.log(`Generated ${path.join(outputRoot, 'robots.txt')}`);
+  } catch (err) {
+    console.error(`Failed to generate robots.txt:`, err.message);
+  }
+
 }
 
 if (require.main === module) {
