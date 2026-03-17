@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node api/index.js",
     "generate": "node generator/index.js",
+    "test": "node --test"
     "test": "jest"
   },
   "dependencies": {
