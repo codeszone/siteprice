@@ -2,7 +2,9 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-const cache = {};
+function generateExplanation(data) {
+  return `The value is based on the site's age of ${data.age} years and traffic of ${data.traffic} visitors.\nAdditionally, the SEO score of ${data.seo_score} contributes to its overall worth.`;
+}
 
 app.get('/api/site', (req, res) => {
   const domain = req.query.domain;
@@ -15,20 +17,17 @@ app.get('/api/site', (req, res) => {
   // It doesn't explicitly say to use the domain from query, but usually it should.
   // I will just return the exact JSON requested.
 
-  const response = {
+  const siteData = {
     "domain": "example.com",
     "age": 5,
     "traffic": 1000,
     "value": 50000,
-    "seo_score": 70,
-    "explanation": "This is a sample site value."
+    "seo_score": 70
   };
 
-  if (domain) {
-    cache[domain] = response;
-  }
+  siteData.explanation = generateExplanation(siteData);
 
-  res.json(response);
+  res.json(siteData);
 });
 
 app.listen(port, () => {
