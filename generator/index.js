@@ -65,23 +65,19 @@ async function generate() {
 
   for (const domain of domains) {
     try {
-      // The API has a bug where passing ?domain= crashes due to undefined cache.
-      // So we call it without query string, but we substitute the correct domain.
-      const response = await axios.get('http://localhost:3000/api/site');
+      // Pass the domain query correctly since we added Object.create(null) and default value
+      const response = await axios.get(`http://localhost:3000/api/site?domain=${domain}`);
       const data = response.data;
 
-      // Override domain to be specific domain
-      data.domain = domain;
-
-      // Replace placeholders in template
+      // Replace placeholders: {{domain}}, {{value}}, {{traffic}}, {{seo_score}}, {{explanation}}
       let output = template;
-      for (const [key, value] of Object.entries(data)) {
-        const regex = new RegExp(`{{${key}}}`, 'g');
-        output = output.replace(regex, value);
-      }
+      output = output.replace(/\{\{domain\}\}/g, data.domain);
+      output = output.replace(/\{\{value\}\}/g, data.site_value); // map value to site_value
+      output = output.replace(/\{\{traffic\}\}/g, data.traffic);
+      output = output.replace(/\{\{seo_score\}\}/g, data.seo_score);
+      output = output.replace(/\{\{explanation\}\}/g, data.explanation);
 
-      // Output directory: requirements asked for /output/website-worth/{domain}/index.html
-      // Let's create it at the project root: ../output/website-worth/{domain}
+      // Output directory: /output/website-worth/{domain}/index.html
       const outDir = path.join(__dirname, '../output/website-worth', domain);
       await fs.ensureDir(outDir);
 
@@ -89,7 +85,8 @@ async function generate() {
       await fs.writeFile(outFile, output, 'utf8');
 
       console.log(`Generated ${outFile}`);
-      generatedPages.push(`https://${domain}/`);
+      // Requirement: include all URLs in format /website-worth/{domain}
+      generatedPages.push(`/website-worth/${domain}`);
     } catch (err) {
       console.error(`Failed to generate for ${domain}:`, err.message);
     }

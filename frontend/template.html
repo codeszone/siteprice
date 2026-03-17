@@ -3,13 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{domain}}</title>
+    <title>{{domain}} Website Worth in 2026</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .ad {
+            background-color: #ddd;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px dashed #999;
+        }
+    </style>
 </head>
 <body>
-    <h1>Domain: {{domain}}</h1>
-    <p>Value: {{value}}</p>
-    <p>Traffic: {{traffic}}</p>
-    <p>SEO Score: {{seo_score}}</p>
-    <p>Explanation: {{explanation}}</p>
+    <div class="container">
+        <h1>{{domain}} Website Worth in 2026</h1>
+
+        <!-- TOP_AD -->
+        <div class="ad">TOP_AD</div>
+
+        <h2>Intro</h2>
+        <p>{{explanation}}</p>
+
+        <h2>Value</h2>
+        <p>Estimated Site Value: ₹{{value}}</p>
+
+        <!-- MIDDLE_AD -->
+        <div class="ad">MIDDLE_AD</div>
+
+        <h2>Traffic</h2>
+        <p>Estimated Monthly Traffic: {{traffic}} visitors</p>
+
+        <h2>SEO Score</h2>
+        <p>SEO Strength Score: {{seo_score}} / 100</p>
+
+        <h2>FAQ</h2>
+        <p><strong>How is this calculated?</strong> The worth is calculated based on indexed pages, backlinks, traffic, and SEO score.</p>
+
+        <!-- BOTTOM_AD -->
+        <div class="ad">BOTTOM_AD</div>
+    </div>
 </body>
 </html>

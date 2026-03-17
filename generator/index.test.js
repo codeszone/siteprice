@@ -28,12 +28,20 @@ describe('generate script', () => {
   });
 
   it('should successfully generate files for all domains', async () => {
-    // Mock successful API response
-    const mockData = {
-      domain: 'test.com', // The script overwrites this
-      value: 50000,
-    };
-    axios.get.mockResolvedValue({ data: mockData });
+    // Mock successful API response dynamically so the correct domain is in data
+    axios.get.mockImplementation(async (url) => {
+      const urlObj = new URL(url);
+      const domainParam = urlObj.searchParams.get('domain');
+      return {
+        data: {
+          domain: domainParam || 'test.com',
+          site_value: 50000,
+          traffic: 1000,
+          seo_score: 80,
+          explanation: 'Test'
+        }
+      };
+    });
 
     await generate();
 
@@ -45,8 +53,8 @@ describe('generate script', () => {
 
     // Verify API was called for each domain
     expect(axios.get).toHaveBeenCalledTimes(domains.length);
-    domains.forEach(() => {
-      expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/api/site');
+    domains.forEach((domain) => {
+      expect(axios.get).toHaveBeenCalledWith(`http://localhost:3000/api/site?domain=${domain}`);
     });
 
     // Verify files were written for each domain
@@ -111,11 +119,16 @@ describe('generate script', () => {
 
   it('should handle file system errors and log them', async () => {
     // Mock successful API response
-    const mockData = {
-      domain: 'test.com',
-      value: 50000,
-    };
-    axios.get.mockResolvedValue({ data: mockData });
+    axios.get.mockImplementation(async (url) => {
+      const urlObj = new URL(url);
+      const domainParam = urlObj.searchParams.get('domain');
+      return {
+        data: {
+          domain: domainParam || 'test.com',
+          site_value: 50000,
+        }
+      };
+    });
 
     // Mock fs failure
     const errorMessage = 'EACCES: permission denied';
