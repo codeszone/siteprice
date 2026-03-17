@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const cache = {};
+
+const cache = Object.create(null);
 
 function generateExplanation(data) {
   return `The value is based on the site's age of ${data.age} years and traffic of ${data.traffic} visitors.\nAdditionally, the SEO score of ${data.seo_score} contributes to its overall worth.`;
