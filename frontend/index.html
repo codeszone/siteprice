@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Worth</title>
+</head>
+<body>
+    <h1>Check Website Worth</h1>
+    <form id="worthForm">
+        <label for="domain">Domain:</label>
+        <input type="text" id="domain" name="domain" required placeholder="example.com">
+        <button type="submit">Check</button>
+    </form>
+
+    <script>
+        document.getElementById('worthForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const domain = document.getElementById('domain').value.trim();
+            if (domain) {
+                window.location.href = '/website-worth/' + encodeURIComponent(domain) + '/';
+            }
+        });
+    </script>
+</body>
+</html>

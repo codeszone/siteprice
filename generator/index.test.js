@@ -51,7 +51,14 @@ describe('generate script', () => {
 
     // Verify files were written for each domain
     expect(fs.ensureDir).toHaveBeenCalledTimes(domains.length);
-    expect(fs.writeFile).toHaveBeenCalledTimes(domains.length);
+    expect(fs.writeFile).toHaveBeenCalledTimes(domains.length + 1);
+
+    expect(fs.writeFile).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('output', 'sitemap.xml')),
+      expect.stringContaining('<?xml version="1.0" encoding="UTF-8"?>'),
+      'utf8'
+    );
+    expect(consoleLogSpy).toHaveBeenCalledWith('Generated sitemap.xml');
 
     domains.forEach((domain) => {
       // Check output directory creation
@@ -72,6 +79,13 @@ describe('generate script', () => {
         expect.stringContaining(`Generated ${path.join(__dirname, '../output/website-worth', domain, 'index.html')}`)
       );
     });
+
+    expect(fs.writeFile).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('output', 'sitemap.xml')),
+      expect.stringContaining('<?xml version="1.0" encoding="UTF-8"?>'),
+      'utf8'
+    );
+    expect(consoleLogSpy).toHaveBeenCalledWith('Generated sitemap.xml');
   });
 
   it('should handle API errors and log them', async () => {
@@ -83,7 +97,7 @@ describe('generate script', () => {
 
     // Verify no files were written
     expect(fs.ensureDir).not.toHaveBeenCalled();
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.writeFile).toHaveBeenCalledTimes(1); // the sitemap
 
     // Verify error logging for each domain
     expect(consoleErrorSpy).toHaveBeenCalledTimes(domains.length);
@@ -109,13 +123,17 @@ describe('generate script', () => {
 
     await generate();
 
-    // Verify error logging for each domain
-    expect(consoleErrorSpy).toHaveBeenCalledTimes(domains.length);
+    // Verify error logging for each domain and sitemap
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(domains.length + 1);
     domains.forEach((domain) => {
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         `Failed to generate for ${domain}:`,
         errorMessage
       );
     });
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Failed to generate sitemap:',
+      errorMessage
+    );
   });
 });

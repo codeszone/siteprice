@@ -13,6 +13,8 @@ async function generate() {
   const templatePath = path.join(__dirname, '../frontend/template.html');
   const template = await fs.readFile(templatePath, 'utf8');
 
+  const generatedPages = [];
+
   for (const domain of domains) {
     try {
       // The API has a bug where passing ?domain= crashes due to undefined cache.
@@ -39,22 +41,21 @@ async function generate() {
       await fs.writeFile(outFile, output, 'utf8');
 
       console.log(`Generated ${outFile}`);
+      generatedPages.push(`https://${domain}/`);
     } catch (err) {
       console.error(`Failed to generate for ${domain}:`, err.message);
     }
   }
 
-  // Generate robots.txt
   try {
-    const outputRoot = path.join(__dirname, '../output');
-    await fs.ensureDir(outputRoot);
-    const robotsContent = 'User-agent: *\nAllow: /\nSitemap: /sitemap.xml\n';
-    await fs.writeFile(path.join(outputRoot, 'robots.txt'), robotsContent, 'utf8');
-    console.log(`Generated ${path.join(outputRoot, 'robots.txt')}`);
+    const sitemapContent = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+      generatedPages.map(page => `  <url>\n    <loc>${page}</loc>\n  </url>`).join('\n') +
+      '\n</urlset>';
+    await fs.writeFile(path.join(__dirname, '../output/sitemap.xml'), sitemapContent, 'utf8');
+    console.log('Generated sitemap.xml');
   } catch (err) {
-    console.error(`Failed to generate robots.txt:`, err.message);
+    console.error('Failed to generate sitemap:', err.message);
   }
-
 }
 
 if (require.main === module) {
