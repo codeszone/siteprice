@@ -2,8 +2,16 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+function generateExplanation(data) {
+  return `The value is based on the site's age of ${data.age} years and traffic of ${data.traffic} visitors.\nAdditionally, the SEO score of ${data.seo_score} contributes to its overall worth.`;
+}
+
 app.get('/api/site', (req, res) => {
   const domain = req.query.domain;
+
+  if (domain && cache[domain]) {
+    return res.json(cache[domain]);
+  }
 
   // The requirement says to return a mock JSON.
   // It doesn't explicitly say to use the domain from query, but usually it should.
