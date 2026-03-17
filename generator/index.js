@@ -45,4 +45,11 @@ async function generate() {
   }
 }
 
-generate();
+if (require.main === module) {
+  generate();
+}
+
+module.exports = {
+  generate,
+  domains
+};
