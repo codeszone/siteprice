@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "node api/index.js",
-    "generate": "node generator/index.js"
+    "generate": "node generator/index.js",
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "dependencies": {
     "express": "^4.18.2",
