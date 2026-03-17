@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const cache = {};
 
+// Remove duplicate const cache = {};
 const cache = Object.create(null);
 
 function generateExplanation(data) {
@@ -33,6 +33,10 @@ app.get('/api/site', (req, res) => {
   res.json(siteData);
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+
+module.exports = { generateExplanation, app };
