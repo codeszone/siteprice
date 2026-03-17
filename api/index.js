@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+const cache = {};
+
 function generateExplanation(data) {
   return `The value is based on the site's age of ${data.age} years and traffic of ${data.traffic} visitors.\nAdditionally, the SEO score of ${data.seo_score} contributes to its overall worth.`;
 }
@@ -26,6 +28,10 @@ app.get('/api/site', (req, res) => {
   };
 
   siteData.explanation = generateExplanation(siteData);
+
+  if (domain) {
+    cache[domain] = siteData;
+  }
 
   res.json(siteData);
 });
