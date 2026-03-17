@@ -29,10 +29,6 @@ app.get('/api/site', (req, res) => {
 
   siteData.explanation = generateExplanation(siteData);
 
-  if (domain) {
-    cache[domain] = siteData;
-  }
-
   res.json(siteData);
 });
 
