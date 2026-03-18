@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { generateExplanation } = require('../api/index.js');
+const { generateExplanation, app } = require('../api/index.js');
+const request = require('supertest');
 
 test('generateExplanation', async (t) => {
   await t.test('returns expected explanation for typical inputs', () => {
@@ -45,3 +46,10 @@ test('generateExplanation', async (t) => {
 });
 
 it("dummy test to pass", () => { expect(true).toBe(true); });
+
+describe('API Endpoints', () => {
+  it('GET /api/site should return 500 when domain causes a crash', async () => {
+    const response = await request(app).get('/api/site?domain[]=1&domain[]=2');
+    expect(response.status).toBe(500);
+  });
+});
