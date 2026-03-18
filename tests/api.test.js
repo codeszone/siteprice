@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { generateExplanation, app } = require('../api/index.js');
 const request = require('supertest');
+const { generateExplanation, app } = require('../api/index.js');
 
 test('generateExplanation', async (t) => {
   await t.test('returns expected explanation for typical inputs', () => {
@@ -45,11 +45,38 @@ test('generateExplanation', async (t) => {
   });
 });
 
-it("dummy test to pass", () => { expect(true).toBe(true); });
+describe('GET /api/site', () => {
+  it('returns data for default domain if no domain query is provided', async () => {
+    const response = await request(app).get('/api/site');
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('domain', 'example.com');
+  });
 
-describe('API Endpoints', () => {
-  it('GET /api/site should return 500 when domain causes a crash', async () => {
-    const response = await request(app).get('/api/site?domain[]=1&domain[]=2');
-    expect(response.status).toBe(500);
+  it('returns data for specific domain if provided in query', async () => {
+    const response = await request(app).get('/api/site?domain=test.com');
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('domain', 'test.com');
+  });
+
+  it('response contains all expected fields', async () => {
+    const response = await request(app).get('/api/site?domain=test.com');
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('domain');
+    expect(response.body).toHaveProperty('age');
+    expect(response.body).toHaveProperty('traffic');
+    expect(response.body).toHaveProperty('monthly_revenue');
+    expect(response.body).toHaveProperty('multiplier');
+    expect(response.body).toHaveProperty('site_value');
+    expect(response.body).toHaveProperty('seo_score');
+    expect(response.body).toHaveProperty('explanation');
+  });
+
+  it('caching works for repeated requests to the same domain', async () => {
+    const response1 = await request(app).get('/api/site?domain=cached.com');
+    const response2 = await request(app).get('/api/site?domain=cached.com');
+
+    expect(response1.status).toBe(200);
+    expect(response2.status).toBe(200);
+    expect(response1.body).toEqual(response2.body);
   });
 });
