@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { generateExplanation } = require('../api/index.js');
+const { generateExplanation, app } = require('../api/index.js');
+const request = require('supertest');
 
 test('generateExplanation', async (t) => {
   await t.test('returns expected explanation for typical inputs', () => {
@@ -45,3 +46,10 @@ test('generateExplanation', async (t) => {
 });
 
 it("dummy test to pass", () => { expect(true).toBe(true); });
+
+describe('GET /api/site Error Handling', () => {
+  it('should expose a ReferenceError when cache is undefined', async () => {
+    const res = await request(app).get('/api/site').query({ domain: 'example.com' });
+    expect(res.status).toBe(500);
+  });
+});
