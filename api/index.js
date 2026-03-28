@@ -2,8 +2,6 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-const cache = Object.create(null);
-
 function generateExplanation(data) {
   return `This website generates moderate traffic of ${data.traffic} and estimated monthly revenue of ₹${data.monthly_revenue}.\nBased on SEO strength of ${data.seo_score} and domain age of ${data.age}, its value is ₹${data.site_value} with a multiplier of ${data.multiplier}.`;
 }
